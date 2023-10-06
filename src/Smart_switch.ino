@@ -26,7 +26,7 @@ void setup()
 
 
     // OPEN THE ENVIRONMENT FILE
-    File file = SPIFFS.open("/.env", "r");
+    File file = SPIFFS.open("../.env", "r");
     if (!file)
     {
         Serial.println("Failed to open .env file");
