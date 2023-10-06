@@ -1,29 +1,38 @@
 #include <ESP8266WiFi.h>
 
-const char *ssid = "Sri Dialog 4G";
+// SSID - SERVICE SET IDENTIFIER IS THE NAME OF WIFI
+// PASSWORD - WIFI PASSWORD
+const char *ssid = "Dialog 4G";
 const char *password = "E76DFED1";
 
+// SET RELAYS WITH THE DIGITAL PINS
 int R1 = D1;
 int R2 = D2;
 int R3 = D3;
 int R4 = D4;
+
+// INITIALIZES A WIFI SERVER OBJECT ON PORT 8080, WHICH WILL LISTEN FOR INCOMING HTTP REQUESTS.
 WiFiServer server(8080);
 
 void setup()
 {
+    // START SERIAL COMMUNICATIONS
     Serial.begin(115200);
     delay(10);
 
+    // SET RELAY PINS AS OUTPUT
     pinMode(R1, OUTPUT);
     pinMode(R2, OUTPUT);
     pinMode(R3, OUTPUT);
     pinMode(R4, OUTPUT);
 
+    // INITIALLY SET RELAYS TO OFF
     digitalWrite(R1, LOW);
     digitalWrite(R2, LOW);
     digitalWrite(R3, LOW);
     digitalWrite(R4, LOW);
 
+    // CONNECT TO WIFI NETWORK
     Serial.println();
     Serial.println();
     Serial.print("Connecting to ");
@@ -31,41 +40,51 @@ void setup()
 
     WiFi.begin(ssid, password);
 
+    // WAIT FOR CONNECTION
     while (WiFi.status() != WL_CONNECTED)
     {
         delay(500);
         Serial.print(".");
     }
+
+    // IF CONNECTION IS SUCCESSFUL
     Serial.println("");
     Serial.println("WiFi connected");
 
+    // START THE SERVER ON PORT 8080
     server.begin();
     Serial.println("Server started");
 
+    // PRINT THE IP ADDRESS
     Serial.print("Use this URL to connect: ");
     Serial.print("http://");
     Serial.print(WiFi.localIP());
     Serial.println("/");
 }
 
+
 void loop()
 {
+    // CHECK IF A CLIENT HAS CONNECTED
     WiFiClient client = server.available();
     if (!client)
     {
         return;
     }
 
+    // WAIT UNTIL THE CLIENT SENDS SOME DATA
     Serial.println("new client");
     while (!client.available())
     {
         delay(1);
     }
 
+    // READ THE FIRST LINE OF THE REQUEST
     String request = client.readStringUntil('\r');
     Serial.println(request);
     client.flush();
 
+    // MATCH THE REQUEST
     if (request.indexOf("/Relay1On") != -1)
     {
         digitalWrite(R1, HIGH);
