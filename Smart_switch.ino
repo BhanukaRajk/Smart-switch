@@ -14,11 +14,47 @@ int R4 = D4;
 // INITIALIZES A WIFI SERVER OBJECT ON PORT 8080, WHICH WILL LISTEN FOR INCOMING HTTP REQUESTS.
 WiFiServer server(8080);
 
+// DEFINE THE MAXIMUM SIZE OF THE JSON BUFFER BASED ON .ENV FILE SIZE
+const size_t bufferSize = 128;
+
+char ssid[16];
+char password[16];
+
 void setup()
 {
-    // START SERIAL COMMUNICATIONS
     Serial.begin(115200);
     delay(10);
+
+
+    // OPEN THE ENVIRONMENT FILE
+    File file = SPIFFS.open("/.env", "r");
+    if (!file)
+    {
+        Serial.println("Failed to open .env file");
+        return;
+    }
+
+    // PARSE THE ENVIRONMENT FILE AND RETRIEVE SSID AND PASSWORD
+    DynamicJsonBuffer jsonBuffer(bufferSize);
+    JsonObject &root = jsonBuffer.parseObject(file);
+    if (!root.success())
+    {
+        Serial.println("Failed to parse .env file");
+        file.close();
+        return;
+    }
+
+    // GET SSID AND PASSWORD FROM THE JSON OBJECT
+    const char *env_ssid = root["ssid"];
+    const char *env_password = root["password"];
+
+    // COPY SSID AND PASSWORD TO THE CHAR ARRAYS
+    strncpy(ssid, env_ssid, sizeof(ssid) - 1);
+    strncpy(password, env_password, sizeof(password) - 1);
+
+    // CLOSE THE ENVIRONMENT FILE
+    file.close();
+
 
     // SET RELAY PINS AS OUTPUT
     pinMode(R1, OUTPUT);
@@ -61,7 +97,6 @@ void setup()
     Serial.print(WiFi.localIP());
     Serial.println("/");
 }
-
 
 void loop()
 {
