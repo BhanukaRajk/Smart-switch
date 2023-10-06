@@ -1,9 +1,13 @@
 #include <ESP8266WiFi.h>
+#include <ArduinoJson.h>
 
-// SSID - SERVICE SET IDENTIFIER IS THE NAME OF WIFI
-// PASSWORD - WIFI PASSWORD
-const char *ssid = "Dialog 4G";
-const char *password = "E76DFED1";
+
+// DEFINE THE MAXIMUM SIZE OF THE JSON BUFFER BASED ON .ENV FILE SIZE
+const size_t bufferSize = 128;
+
+// DEFINE THE SSID AND PASSWORD CHAR ARRAYS
+char ssid[16];
+char password[16];
 
 // SET RELAYS WITH THE DIGITAL PINS
 int R1 = D1;
@@ -14,11 +18,6 @@ int R4 = D4;
 // INITIALIZES A WIFI SERVER OBJECT ON PORT 8080, WHICH WILL LISTEN FOR INCOMING HTTP REQUESTS.
 WiFiServer server(8080);
 
-// DEFINE THE MAXIMUM SIZE OF THE JSON BUFFER BASED ON .ENV FILE SIZE
-const size_t bufferSize = 128;
-
-char ssid[16];
-char password[16];
 
 void setup()
 {
