@@ -6,8 +6,8 @@
 const size_t bufferSize = 128;
 
 // DEFINE THE SSID AND PASSWORD CHAR ARRAYS
-char ssid[16];
-char password[16];
+char ssid[18];
+char password[18];
 
 // SET RELAYS WITH THE DIGITAL PINS
 int R1 = D1;
